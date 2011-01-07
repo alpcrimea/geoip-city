@@ -39,3 +39,20 @@ end
 task(:webpage) do
   sh 'scp -r doc/* rydahl@rubyforge.org:/var/www/gforge-projects/geoip-city/'
 end
+
+CLOBBER.include "*.dat", "*.dat.gz"
+
+file 'GeoLiteCity.dat.gz' do
+  sh "wget -c http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
+end
+
+file 'GeoLiteCity.dat' => ['GeoLiteCity.dat.gz'] do
+  sh "gunzip GeoLiteCity.dat.gz"
+  touch 'GeoLiteCite.dat'
+end
+
+task :database => ['GeoLiteCity.dat'] do
+  ENV['GEOIP_DB'] = 'GeoLiteCity.dat'
+end
+
+task :test => [:database]
