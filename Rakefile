@@ -17,6 +17,14 @@ spec = Gem::Specification.new do |s|
   s.test_files        = FileList['test/*.rb']
   s.extensions        = FileList['ext/*/extconf.rb']
   s.require_path      = 'lib'
+
+  s.add_development_dependency 'rake-compiler', '~> 0.7.5'
+end
+
+task :gemspec do
+  File.open('geoip_city.gemspec', 'w') do |f|
+    f.write spec.to_ruby
+  end
 end
 
 Rake::ExtensionTask.new('geoip_city', spec) do |ext|
