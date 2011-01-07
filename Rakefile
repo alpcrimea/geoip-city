@@ -9,8 +9,9 @@ spec = Gem::Specification.new do |s|
   s.name              = 'geoip_city'
   s.author            = 'ry dahl'
   s.email             = 'ry@tinyclouds.org'
-  s.version           = "0.2.0"
+  s.version           = "0.3.0.beta"
   s.summary           = "A Binding to the GeoIP C library"
+  s.description       = s.summary
   s.homepage          = "http://geoip_city.rubyforge.org"
   s.files             = FileList['ext/**/*.{c,rb}', 'test/*.rb', 'Rakefile', 'README.md']
   s.test_files        = FileList['test/*.rb']
@@ -40,15 +41,13 @@ task(:webpage) do
   sh 'scp -r doc/* rydahl@rubyforge.org:/var/www/gforge-projects/geoip-city/'
 end
 
-CLOBBER.include "*.dat", "*.dat.gz"
-
 file 'GeoLiteCity.dat.gz' do
   sh "wget -c http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz"
 end
 
 file 'GeoLiteCity.dat' => ['GeoLiteCity.dat.gz'] do
   sh "gunzip GeoLiteCity.dat.gz"
-  touch 'GeoLiteCite.dat'
+  touch 'GeoLiteCity.dat'
 end
 
 task :database => ['GeoLiteCity.dat'] do
