@@ -1,0 +1,6 @@
+.rvmrc
+doc
+pkg
+tmp
+*.bundle
+*.so

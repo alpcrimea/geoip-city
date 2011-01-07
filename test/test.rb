@@ -1,6 +1,5 @@
 require 'test/unit'
-require File.dirname(__FILE__) + '/geoip_city'
-require 'rubygems'
+require 'geoip_city'
 
 class GeoIPTest < Test::Unit::TestCase
 
