@@ -66,6 +66,11 @@ class GeoIPTest < Test::Unit::TestCase
     end
   end
   
+  # timezone
+
+  def test_tz_from_country_region
+    assert_equal 'America/New_York', GeoIP::TimeZone.look_up('US', 'NY')
+  end
 end
 
 class GeoIPCityTest < Test::Unit::TestCase
