@@ -17,6 +17,7 @@ static VALUE mGeoIP_Organization;
 static VALUE mGeoIP_ISP;
 static VALUE mGeoIP_NetSpeed;
 static VALUE mGeoIP_Domain;
+static VALUE mGeoIP_TimeZone;
 static VALUE rb_geoip_memory;
 static VALUE rb_geoip_filesystem;
 static VALUE rb_geoip_index;
@@ -44,6 +45,9 @@ void rb_hash_sset(VALUE hash, const char *str, VALUE v) {
     https://github.com/Vagabond/erlang-iconv/blob/master/c_src/iconv_drv.c */
 static VALUE encode_to_utf8_and_return_rb_str(char *value) {
   char dst[BUFSIZ];
+  if (value==NULL) {
+    return rb_str_new2("");
+  }
   size_t srclen = strlen(value);
   size_t dstlen = srclen * 2;
 
@@ -324,6 +328,20 @@ VALUE rb_geoip_domain_look_up(VALUE self, VALUE addr) {
   return generic_single_value_lookup_response("domain", GeoIP_name_by_addr(gi, StringValuePtr(addr)));
 }
 
+/* GeoIP::TimeZone *******************************************************/
+
+/* GeoIP::TimeZone.look_up(country, region)
+ */
+static VALUE rb_geoip_timezone_lookup(VALUE self, VALUE country, VALUE region)
+{
+  Check_Type(country, T_STRING);
+  Check_Type(region, T_STRING);
+
+  const char* tz = GeoIP_time_zone_by_country_and_region(
+      StringValuePtr(country), StringValuePtr(region));
+  return rb_str_new2(tz);
+}
+
 /* GeoIP *********************************************************************/
 
 /* Returns the numeric form of an IP address.
@@ -381,6 +399,9 @@ void Init_geoip()
   mGeoIP_Domain = rb_define_class_under(mGeoIP, "Domain", rb_cObject);
   rb_define_singleton_method(mGeoIP_Domain, "new",     rb_geoip_domain_new,     -1);
   rb_define_method(          mGeoIP_Domain, "look_up", rb_geoip_domain_look_up, 1);
+
+  mGeoIP_TimeZone = rb_define_class_under(mGeoIP, "TimeZone", rb_cObject);
+  rb_define_singleton_method(mGeoIP_TimeZone, "look_up", rb_geoip_timezone_lookup, 2);
 
   rb_define_singleton_method(mGeoIP, "addr_to_num", rb_geoip_addr_to_num, 1);
   rb_define_singleton_method(mGeoIP, "num_to_addr", rb_geoip_num_to_addr, 1);
